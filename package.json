@@ -1,0 +1,27 @@
+{
+  "name": "eagle-video-downloader",
+  "version": "2.0.0",
+  "description": "Eagle plugin for downloading videos from 1000+ websites using yt-dlp",
+  "main": "js/plugin.js",
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "dev": "node esbuild.config.js --watch",
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0"
+  },
+  "keywords": [
+    "eagle",
+    "video",
+    "downloader",
+    "yt-dlp",
+    "youtube",
+    "twitter"
+  ],
+  "author": "Olivier Estévez",
+  "license": "MIT"
+}

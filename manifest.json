@@ -1,18 +1,16 @@
 {
   "id": "5e76738a-75a8-4472-89b3-ebd5d72c1fe9",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "platform": "all",
   "arch": "all",
-  "name": "Twitter Video Downloader",
+  "name": "Video Downloader",
   "logo": "assets/logo.png",
-  "keywords": [],
+  "keywords": ["video", "download", "youtube", "twitter", "yt-dlp"],
   "devTools": false,
   "main": {
     "url": "index.html",
     "width": 480,
-    "minWidth": 480,
-    "height": 180,
-    "minHeight": 180,
+    "height": 200,
     "resizable": false,
     "frame": false,
     "vibrancy": true

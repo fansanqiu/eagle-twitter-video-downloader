@@ -1,38 +1,86 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="css/app.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <link rel="stylesheet" href="css/app.css" />
     <script type="text/javascript" src="js/plugin.js"></script>
-</head>
+  </head>
 
-<body>
-	<div class="app">
+  <body>
+    <div class="app">
+      <header>
+        <div class="draggable">
+          <img src="assets/logo.png" alt="Logo" width="24" height="24" />
+          <h1 id="appName">Video Downloader</h1>
+        </div>
+        <div class="btn-close" id="closeButton">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="red"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M12.7071 12.0001L16.8531 7.85413C17.0491 7.65813 17.0491 7.34213 16.8531 7.14613C16.6581 6.95113 16.3421 6.95113 16.1461 7.14613L12.0001 11.2931L7.85313 7.14613C7.65813 6.95113 7.34213 6.95113 7.14613 7.14613C6.95113 7.34213 6.95113 7.65813 7.14613 7.85413L11.2931 12.0001L7.14613 16.1461C6.95113 16.3421 6.95113 16.6581 7.14613 16.8541C7.24413 16.9511 7.37213 17.0001 7.50013 17.0001C7.62813 17.0001 7.75613 16.9511 7.85313 16.8541L12.0001 12.7071L16.1461 16.8541C16.2441 16.9511 16.3721 17.0001 16.5001 17.0001C16.6281 17.0001 16.7561 16.9511 16.8531 16.8541C17.0491 16.6581 17.0491 16.3421 16.8531 16.1461L12.7071 12.0001Z"
+              fill="#F7F8F8"
+            />
+          </svg>
+        </div>
+      </header>
 
-		<header>
-			<div class="draggable">
-				<img src="assets/logo.png" alt="Logo" width="24" height="24">
-				<h1 id="appName">Twitter Video Downloader</h1>
-			</div>
-			<div class="btn-close" id="closeButton">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
-					<path fill-rule="evenodd" clip-rule="evenodd" d="M12.7071 12.0001L16.8531 7.85413C17.0491 7.65813 17.0491 7.34213 16.8531 7.14613C16.6581 6.95113 16.3421 6.95113 16.1461 7.14613L12.0001 11.2931L7.85313 7.14613C7.65813 6.95113 7.34213 6.95113 7.14613 7.14613C6.95113 7.34213 6.95113 7.65813 7.14613 7.85413L11.2931 12.0001L7.14613 16.1461C6.95113 16.3421 6.95113 16.6581 7.14613 16.8541C7.24413 16.9511 7.37213 17.0001 7.50013 17.0001C7.62813 17.0001 7.75613 16.9511 7.85313 16.8541L12.0001 12.7071L16.1461 16.8541C16.2441 16.9511 16.3721 17.0001 16.5001 17.0001C16.6281 17.0001 16.7561 16.9511 16.8531 16.8541C17.0491 16.6581 17.0491 16.3421 16.8531 16.1461L12.7071 12.0001Z" fill="#F7F8F8"/>
-					</svg>
-			</div>
-		</header>
+      <main>
+        <!-- Initialization UI (shown during first-time setup) -->
+        <div id="initContainer" class="container" style="display: none">
+          <div class="init-section">
+            <p id="initMessage" class="init-message">Initializing...</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="initProgressFill"></div>
+            </div>
+            <p class="init-hint">First-time setup requires downloading components, please wait...</p>
+          </div>
+        </div>
 
-		<main>
-			<div class="container">
-				<label for="twitterUrl">Twitter / X URL</label>
-				<form id="downloadForm">
-					<input type="text" id="twitterUrl" placeholder="Paste Twitter video URL here">
-					<button type="submit"><span>Download</span></button>
-				</form>
-				<div id="status"></div>
-			</div>
-		</main>
+        <!-- Main UI (shown after initialization) -->
+        <div id="mainContainer" class="container">
+          <label for="videoUrl"
+            >Video URL (YouTube, Twitter, Bilibili, TikTok, etc.)</label
+          >
+          <form id="downloadForm">
+            <input
+              type="text"
+              id="videoUrl"
+              placeholder="Paste any video URL..."
+            />
+            <button type="submit"><span>Download</span></button>
+          </form>
 
-	</div>
-</body>
+          <!-- Progress Container -->
+          <div
+            id="progressContainer"
+            class="progress-container"
+            style="display: none"
+          >
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-info">
+              <span id="progressPercent">0%</span>
+              <span id="progressSpeed"></span>
+              <span id="progressEta"></span>
+            </div>
+          </div>
+
+          <div id="status"></div>
+          <a id="locateLink" class="locate-link" style="display: none;"></a>
+        </div>
+      </main>
+    </div>
+  </body>
 </html>

@@ -1,3 +1,23 @@
-.DS_Store
+# Node modules
+node_modules/
 
-node_modules
+# Build output
+dist/
+
+# Binary files (downloaded at runtime)
+bin/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Lock files (optional, can include if needed)
+# package-lock.json
