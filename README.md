@@ -54,6 +54,19 @@ This is a one-time download. Please wait for the initialization to complete.
 
 ## Development
 
+### Project Structure
+
+```
+├── index.html       # UI with embedded CSS
+├── js/plugin.js     # Main plugin source
+├── dist/plugin.js   # Bundled output (esbuild)
+├── bin/             # yt-dlp binary (auto-downloaded)
+├── assets/          # Logo and icons
+└── manifest.json    # Eagle plugin config
+```
+
+### Commands
+
 ```bash
 # Install dependencies
 npm install

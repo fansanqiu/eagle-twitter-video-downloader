@@ -1,86 +1,314 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    />
-    <link rel="stylesheet" href="css/app.css" />
-    <script type="text/javascript" src="js/plugin.js"></script>
-  </head>
 
-  <body>
-    <div class="app">
-      <header>
-        <div class="draggable">
-          <img src="assets/logo.png" alt="Logo" width="24" height="24" />
-          <h1 id="appName">Video Downloader</h1>
-        </div>
-        <div class="btn-close" id="closeButton">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="red"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M12.7071 12.0001L16.8531 7.85413C17.0491 7.65813 17.0491 7.34213 16.8531 7.14613C16.6581 6.95113 16.3421 6.95113 16.1461 7.14613L12.0001 11.2931L7.85313 7.14613C7.65813 6.95113 7.34213 6.95113 7.14613 7.14613C6.95113 7.34213 6.95113 7.65813 7.14613 7.85413L11.2931 12.0001L7.14613 16.1461C6.95113 16.3421 6.95113 16.6581 7.14613 16.8541C7.24413 16.9511 7.37213 17.0001 7.50013 17.0001C7.62813 17.0001 7.75613 16.9511 7.85313 16.8541L12.0001 12.7071L16.1461 16.8541C16.2441 16.9511 16.3721 17.0001 16.5001 17.0001C16.6281 17.0001 16.7561 16.9511 16.8531 16.8541C17.0491 16.6581 17.0491 16.3421 16.8531 16.1461L12.7071 12.0001Z"
-              fill="#F7F8F8"
-            />
-          </svg>
-        </div>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <style>
+    /* ================================
+       Reset and Base Styles
+       ================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Roboto,
+        Arial, "PingFang SC", "PingFang TC", "Hiragino Sans GB", "Microsoft Yahei",
+        "Microsoft Jhenghei", sans-serif;
+    }
 
-      <main>
-        <!-- Initialization UI (shown during first-time setup) -->
-        <div id="initContainer" class="container" style="display: none">
-          <div class="init-section">
-            <p id="initMessage" class="init-message">Initializing...</p>
-            <div class="progress-bar">
-              <div class="progress-fill" id="initProgressFill"></div>
-            </div>
-            <p class="init-hint">First-time setup requires downloading components, please wait...</p>
+    html,
+    body {
+      height: 100%;
+    }
+
+    /* ================================
+       Layout
+       ================================ */
+    .app {
+      height: 100%;
+      background-color: rgba(24, 25, 28, 0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ================================
+       Header
+       ================================ */
+    header {
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgb(248, 249, 251);
+    }
+
+    .draggable {
+      -webkit-app-region: drag;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      height: 100%;
+    }
+
+    .app-title {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .btn-close {
+      width: 24px;
+      height: 24px;
+      background-color: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-close:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* ================================
+       Main Content
+       ================================ */
+    main {
+      height: 100%;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgb(248, 249, 251);
+    }
+
+    .container {
+      width: 100%;
+      margin-top: -24px;
+    }
+
+    /* ================================
+       Init Section
+       ================================ */
+    .init-section {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .init-message {
+      font-size: 14px;
+      color: rgb(248, 249, 251);
+      margin-bottom: 12px;
+    }
+
+    .init-hint {
+      font-size: 11px;
+      color: rgba(248, 249, 251, 0.5);
+      margin-top: 12px;
+    }
+
+    /* ================================
+       Progress Bar
+       ================================ */
+    .progress-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3297ff, #4caf50);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-container {
+      margin-top: 12px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(248, 249, 251, 0.5);
+      margin-top: 6px;
+    }
+
+    .progress-info .eta {
+      text-align: right;
+    }
+
+    /* ================================
+       Form Elements
+       ================================ */
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: rgba(248, 249, 251, 0.7);
+      margin-bottom: 8px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .input-url {
+      padding: 0 12px;
+      border-radius: 8px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: rgb(248, 249, 251);
+      outline: none;
+    }
+
+    .input-url:focus {
+      border-color: #3297ff;
+    }
+
+    .input-url.error:focus {
+      border-color: #f56c6c;
+    }
+
+    .btn-download {
+      font-size: 13px;
+      height: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #3297ff;
+      color: rgb(248, 249, 251);
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .btn-download:hover {
+      background-color: #5aadff;
+    }
+
+    .btn-download span {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ================================
+       Status & Links
+       ================================ */
+    #status {
+      font-size: 13px;
+      color: rgba(248, 249, 251, 0.5);
+      margin-top: 10px;
+      min-height: 1.2em;
+    }
+
+    #status.error {
+      color: #f56c6c;
+    }
+
+    .locate-link {
+      font-size: 12px;
+      color: #3297ff;
+      margin-top: 4px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .locate-link:hover {
+      color: #5aadff;
+    }
+
+    /* ================================
+       Utilities (used by JS)
+       ================================ */
+    .no-transition,
+    .no-transition * {
+      transition: none !important;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+  <script type="text/javascript" src="dist/plugin.js"></script>
+</head>
+
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header>
+      <div class="draggable">
+        <img src="assets/logo.png" alt="Logo" width="24" height="24" />
+        <h1 id="appName" class="app-title">Video Downloader</h1>
+      </div>
+      <div id="closeButton" class="btn-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M12.7071 12.0001L16.8531 7.85413C17.0491 7.65813 17.0491 7.34213 16.8531 7.14613C16.6581 6.95113 16.3421 6.95113 16.1461 7.14613L12.0001 11.2931L7.85313 7.14613C7.65813 6.95113 7.34213 6.95113 7.14613 7.14613C6.95113 7.34213 6.95113 7.65813 7.14613 7.85413L11.2931 12.0001L7.14613 16.1461C6.95113 16.3421 6.95113 16.6581 7.14613 16.8541C7.24413 16.9511 7.37213 17.0001 7.50013 17.0001C7.62813 17.0001 7.75613 16.9511 7.85313 16.8541L12.0001 12.7071L16.1461 16.8541C16.2441 16.9511 16.3721 17.0001 16.5001 17.0001C16.6281 17.0001 16.7561 16.9511 16.8531 16.8541C17.0491 16.6581 17.0491 16.3421 16.8531 16.1461L12.7071 12.0001Z"
+            fill="#F7F8F8" />
+        </svg>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Initialization UI -->
+      <div id="initContainer" class="container hidden">
+        <div class="init-section">
+          <p id="initMessage" class="init-message">Initializing...</p>
+          <div class="progress-bar">
+            <div id="initProgressFill" class="progress-fill"></div>
+          </div>
+          <p class="init-hint">First-time setup requires downloading components, please wait...</p>
+        </div>
+      </div>
+
+      <!-- Main UI -->
+      <div id="mainContainer" class="container">
+        <label for="videoUrl" class="form-label">Video URL (YouTube, Twitter, Bilibili, TikTok, etc.)</label>
+        <form id="downloadForm" class="form-row">
+          <input type="text" id="videoUrl" class="input-url" placeholder="Paste any video URL..." />
+          <button type="submit" id="downloadBtn" class="btn-download">
+            <span>Download</span>
+          </button>
+        </form>
+
+        <!-- Progress Container -->
+        <div id="progressContainer" class="progress-container hidden">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <div class="progress-info">
+            <span id="progressPercent">0%</span>
+            <span id="progressSpeed"></span>
+            <span id="progressEta" class="eta"></span>
           </div>
         </div>
 
-        <!-- Main UI (shown after initialization) -->
-        <div id="mainContainer" class="container">
-          <label for="videoUrl"
-            >Video URL (YouTube, Twitter, Bilibili, TikTok, etc.)</label
-          >
-          <form id="downloadForm">
-            <input
-              type="text"
-              id="videoUrl"
-              placeholder="Paste any video URL..."
-            />
-            <button type="submit"><span>Download</span></button>
-          </form>
+        <div id="status"></div>
+        <a id="locateLink" class="locate-link hidden"></a>
+      </div>
+    </main>
+  </div>
+</body>
 
-          <!-- Progress Container -->
-          <div
-            id="progressContainer"
-            class="progress-container"
-            style="display: none"
-          >
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-info">
-              <span id="progressPercent">0%</span>
-              <span id="progressSpeed"></span>
-              <span id="progressEta"></span>
-            </div>
-          </div>
-
-          <div id="status"></div>
-          <a id="locateLink" class="locate-link" style="display: none;"></a>
-        </div>
-      </main>
-    </div>
-  </body>
 </html>

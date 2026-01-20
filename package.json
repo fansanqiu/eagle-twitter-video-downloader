@@ -5,8 +5,7 @@
   "main": "js/plugin.js",
   "scripts": {
     "build": "node esbuild.config.js",
-    "dev": "node esbuild.config.js --watch",
-    "postinstall": "node scripts/postinstall.js"
+    "dev": "node esbuild.config.js --watch"
   },
   "dependencies": {
     "ffmpeg-static": "^5.2.0"
