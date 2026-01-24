@@ -5,50 +5,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <style>
-    /* ================================
-       Reset and Base Styles
-       ================================ */
-    *,
-    *::before,
-    *::after {
+    /* Reset */
+    * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-font-smoothing: antialiased;
       font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Roboto,
-        Arial, "PingFang SC", "PingFang TC", "Hiragino Sans GB", "Microsoft Yahei",
-        "Microsoft Jhenghei", sans-serif;
+        Arial, "PingFang SC", "PingFang TC", sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
-    html,
-    body {
-      height: 100%;
-    }
+    html, body { height: 100%; overflow: hidden; }
 
-    /* ================================
-       Layout
-       ================================ */
+    /* Layout */
     .app {
       height: 100%;
-      background-color: rgba(24, 25, 28, 0.9);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background: rgba(24, 25, 28, 0.9);
+      color: rgb(248, 249, 251);
     }
 
-    /* ================================
-       Header
-       ================================ */
+    /* Header */
     header {
-      user-select: none;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
       height: 48px;
       padding: 0 8px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgb(248, 249, 251);
+      user-select: none;
     }
 
     .draggable {
@@ -60,74 +44,37 @@
       height: 100%;
     }
 
-    .app-title {
-      display: inline-block;
-      font-size: 14px;
-      font-weight: 500;
-    }
+    .app-title { font-size: 14px; font-weight: 500; }
 
     .btn-close {
       width: 24px;
       height: 24px;
-      background-color: transparent;
-      cursor: pointer;
+      background: transparent;
+      border: none;
       border-radius: 4px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    .btn-close:hover { background: rgba(255, 255, 255, 0.05); }
 
-    .btn-close:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
+    /* Main */
+    main { padding: 12px; }
+    .container { width: 100%; }
 
-    /* ================================
-       Main Content
-       ================================ */
-    main {
-      height: 100%;
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgb(248, 249, 251);
-    }
+    /* Init Section */
+    .init-section { text-align: center; padding: 20px 0; }
+    .init-message { font-size: 14px; margin-bottom: 12px; }
+    .init-hint { font-size: 11px; color: rgba(248, 249, 251, 0.5); margin-top: 12px; }
 
-    .container {
-      width: 100%;
-      margin-top: -24px;
-    }
-
-    /* ================================
-       Init Section
-       ================================ */
-    .init-section {
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .init-message {
-      font-size: 14px;
-      color: rgb(248, 249, 251);
-      margin-bottom: 12px;
-    }
-
-    .init-hint {
-      font-size: 11px;
-      color: rgba(248, 249, 251, 0.5);
-      margin-top: 12px;
-    }
-
-    /* ================================
-       Progress Bar
-       ================================ */
+    /* Progress */
     .progress-bar {
       height: 8px;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 4px;
       overflow: hidden;
     }
-
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #3297ff, #4caf50);
@@ -135,11 +82,7 @@
       transition: width 0.3s ease;
       width: 0%;
     }
-
-    .progress-container {
-      margin-top: 12px;
-    }
-
+    .progress-container { margin-top: 12px; }
     .progress-info {
       display: flex;
       justify-content: space-between;
@@ -148,82 +91,43 @@
       margin-top: 6px;
     }
 
-    .progress-info .eta {
-      text-align: right;
-    }
-
-    /* ================================
-       Form Elements
-       ================================ */
-    .form-label {
-      display: block;
-      font-size: 13px;
-      color: rgba(248, 249, 251, 0.7);
-      margin-bottom: 8px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 8px;
-    }
+    /* Form */
+    .form-row { display: flex; gap: 8px; }
 
     .input-url {
-      padding: 0 12px;
-      border-radius: 8px;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.2);
+      flex: 1;
       height: 36px;
+      padding: 0 12px;
+      background: rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
       color: rgb(248, 249, 251);
       outline: none;
     }
-
-    .input-url:focus {
-      border-color: #3297ff;
-    }
-
-    .input-url.error:focus {
-      border-color: #f56c6c;
-    }
+    .input-url:focus { border-color: #3297ff; }
+    .input-url.error:focus { border-color: #f56c6c; }
 
     .btn-download {
-      font-size: 13px;
       height: 36px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #3297ff;
-      color: rgb(248, 249, 251);
       padding: 0 16px;
-      border-radius: 8px;
+      background: #3297ff;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      cursor: pointer;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-
-    .btn-download:hover {
-      background-color: #5aadff;
-    }
-
-    .btn-download span {
+      border-radius: 8px;
+      color: rgb(248, 249, 251);
+      font-size: 13px;
       font-weight: 600;
-      white-space: nowrap;
+      cursor: pointer;
     }
+    .btn-download:hover { background: #5aadff; }
 
-    /* ================================
-       Status & Links
-       ================================ */
+    /* Status */
     #status {
       font-size: 13px;
       color: rgba(248, 249, 251, 0.5);
       margin-top: 10px;
       min-height: 1.2em;
     }
-
-    #status.error {
-      color: #f56c6c;
-    }
+    #status.error { color: #f56c6c; }
 
     .locate-link {
       font-size: 12px;
@@ -232,22 +136,10 @@
       cursor: pointer;
       text-decoration: underline;
     }
+    .locate-link:hover { color: #5aadff; }
 
-    .locate-link:hover {
-      color: #5aadff;
-    }
-
-    /* ================================
-       Utilities (used by JS)
-       ================================ */
-    .no-transition,
-    .no-transition * {
-      transition: none !important;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    /* Utilities */
+    .hidden { display: none !important; }
   </style>
   <script type="text/javascript" src="dist/plugin.js"></script>
 </head>
@@ -284,7 +176,6 @@
 
       <!-- Main UI -->
       <div id="mainContainer" class="container">
-        <label for="videoUrl" class="form-label">Video URL (YouTube, Twitter, Bilibili, TikTok, etc.)</label>
         <form id="downloadForm" class="form-row">
           <input type="text" id="videoUrl" class="input-url" placeholder="Paste any video URL..." />
           <button type="submit" id="downloadBtn" class="btn-download">

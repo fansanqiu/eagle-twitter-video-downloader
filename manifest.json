@@ -10,7 +10,7 @@
   "main": {
     "url": "index.html",
     "width": 480,
-    "height": 200,
+    "height": 122,
     "resizable": false,
     "frame": false,
     "vibrancy": true

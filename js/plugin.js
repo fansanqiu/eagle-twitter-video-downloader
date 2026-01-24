@@ -129,7 +129,6 @@ async function handleDownload() {
   const url = urlInput.value.trim();
 
   if (!url) {
-    showError(t('emptyUrl'));
     return;
   }
 
