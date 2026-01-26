@@ -12,8 +12,18 @@ const i18n = {
     // UI Labels
     appTitle: "视频下载器",
     inputPlaceholder: "粘贴任意视频链接...",
+    pasteVideoUrl: "粘贴任意视频链接...",
     downloadBtn: "下载",
     downloadingBtn: "下载中...",
+
+    // Queue status
+    preparing: "准备中...",
+    waiting: "等待中...",
+    downloading: "下载中...",
+    completed: "完成",
+    retry: "重试",
+    addToQueue: "添加到队列",
+    loading: "加载中...",
 
     // Init messages
     initDownloading: "正在下载 yt-dlp...",
@@ -25,7 +35,6 @@ const i18n = {
     // Download messages
     fetchingInfo: "正在获取视频信息...",
     foundVideo: "找到视频",
-    downloading: "正在下载视频...",
     downloadComplete: "下载完成，正在导入 Eagle...",
     importSuccess: "导入成功",
     downloadFailed: "下载失败",
@@ -33,12 +42,20 @@ const i18n = {
     // Error messages
     notInitialized: "插件尚未初始化完成",
     emptyUrl: "请输入视频链接",
+    pleaseEnterUrl: "请输入视频链接",
     invalidUrl: "请输入有效的视频链接",
     fileNotFound: "下载完成但找不到文件",
     eagleImportFailed: "导入 Eagle 失败",
     duplicateFound: "该视频已存在于库中",
     checkingDuplicate: "正在检查重复...",
     clickToRedownload: "点击重新下载并导入",
+    eagleApiNotAvailable: "Eagle API 不可用",
+    untitledVideo: "未命名视频",
+    downloadedVideo: "已下载视频",
+    ytdlpNotInstalled: "yt-dlp 未安装",
+    failedToExecuteYtdlp: "执行 yt-dlp 失败",
+    ytdlpExitedWithCode: "yt-dlp 退出，代码",
+    unknown: "未知",
 
     // Progress
     remaining: "剩余",
@@ -47,8 +64,18 @@ const i18n = {
     // UI Labels
     appTitle: "Video Downloader",
     inputPlaceholder: "Paste any video URL...",
+    pasteVideoUrl: "Paste any video URL...",
     downloadBtn: "Download",
     downloadingBtn: "Downloading...",
+
+    // Queue status
+    preparing: "Preparing...",
+    waiting: "Waiting...",
+    downloading: "Downloading...",
+    completed: "Complete",
+    retry: "Retry",
+    addToQueue: "Add to Queue",
+    loading: "Loading...",
 
     // Init messages
     initDownloading: "Downloading yt-dlp...",
@@ -62,7 +89,6 @@ const i18n = {
     // Download messages
     fetchingInfo: "Fetching video information...",
     foundVideo: "Found video",
-    downloading: "Downloading video...",
     downloadComplete: "Download complete, importing to Eagle...",
     importSuccess: "Import successful",
     downloadFailed: "Download failed",
@@ -70,12 +96,20 @@ const i18n = {
     // Error messages
     notInitialized: "Plugin not yet initialized",
     emptyUrl: "Please enter a video URL",
+    pleaseEnterUrl: "Please enter a video URL",
     invalidUrl: "Please enter a valid video URL",
     fileNotFound: "Download complete but file not found",
     eagleImportFailed: "Failed to import to Eagle",
     duplicateFound: "This video already exists in library",
     checkingDuplicate: "Checking for duplicates...",
     clickToRedownload: "Click to re-download and import",
+    eagleApiNotAvailable: "Eagle API not available",
+    untitledVideo: "Untitled Video",
+    downloadedVideo: "Downloaded Video",
+    ytdlpNotInstalled: "yt-dlp not installed",
+    failedToExecuteYtdlp: "Failed to execute yt-dlp",
+    ytdlpExitedWithCode: "yt-dlp exited with code",
+    unknown: "Unknown",
 
     // Progress
     remaining: "Remaining",
@@ -138,14 +172,19 @@ function applyTranslations(isDownloading = false) {
   const appName = document.getElementById("appName");
   if (appName) appName.textContent = t("appTitle");
 
-  const videoUrl = document.getElementById("videoUrl");
+  const videoUrl = document.getElementById("urlInput");
   if (videoUrl) videoUrl.placeholder = t("inputPlaceholder");
 
-  const downloadBtn = document.querySelector("#downloadForm button span");
-  if (downloadBtn && !isDownloading) downloadBtn.textContent = t("downloadBtn");
+  const addButton = document.getElementById("addButton");
+  if (addButton && !isDownloading) addButton.textContent = t("downloadBtn");
 
   const initHint = document.querySelector(".init-hint");
   if (initHint) initHint.textContent = t("initHint");
+
+  const initMessage = document.getElementById("initMessage");
+  if (initMessage && !initMessage.textContent) {
+    initMessage.textContent = t("initDownloading");
+  }
 }
 
 module.exports = {

@@ -9,8 +9,8 @@
   "devTools": false,
   "main": {
     "url": "index.html",
-    "width": 480,
-    "height": 122,
+    "width": 400,
+    "height": 600,
     "resizable": false,
     "frame": false,
     "vibrancy": true

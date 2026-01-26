@@ -18,9 +18,12 @@ Download videos from **1000+ websites** directly into Eagle. Powered by [yt-dlp]
 
 - 🎬 **Multi-platform Support**: Download from 1000+ video websites
 - 📦 **Auto Setup**: Automatically downloads required binaries on first run
-- 📊 **Progress Display**: Real-time download progress with speed and ETA
+- 📊 **Download Queue**: Add multiple videos and download them concurrently
+- 🔄 **Concurrent Downloads**: Process up to 3 downloads simultaneously
+- 📋 **Queue Management**: View all downloads with real-time progress tracking
 - 🔄 **High Quality**: Downloads best available quality with ffmpeg merging
 - 🦅 **Eagle Integration**: Automatically imports videos to Eagle with metadata
+- 💾 **Persistent History**: Download history saved across sessions
 
 ## Installation
 
@@ -48,9 +51,11 @@ This is a one-time download. Please wait for the initialization to complete.
 ## Usage
 
 1. Copy a video URL from any supported website
-2. Paste it into the plugin
-3. Click "Download"
-4. The video will be downloaded and imported to Eagle automatically
+2. Paste it into the plugin input field
+3. Click "Download" to add it to the queue
+4. Add more videos while downloads are in progress
+5. Videos will be downloaded automatically and imported to Eagle
+6. View download progress and history in the queue list
 
 ## Development
 

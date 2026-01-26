@@ -10,18 +10,32 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Roboto,
+      font-family: Inter, -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Roboto,
         Arial, "PingFang SC", "PingFang TC", sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
     html, body { height: 100%; overflow: hidden; }
 
+    /* CSS Variables - Design System */
+    :root {
+      --bg1: #191a1d;
+      --bg2: #131416;
+      --fg1: #ffffff;
+      --fg2: rgba(255, 255, 255, 0.4);
+      --brand: #3197ff;
+      --stroke: rgba(255, 255, 255, 0.04);
+      --error: #f56c6c;
+      --success: #4caf50;
+    }
+
     /* Layout */
     .app {
       height: 100%;
-      background: rgba(24, 25, 28, 0.9);
-      color: rgb(248, 249, 251);
+      background: var(--bg1);
+      color: var(--fg1);
+      display: flex;
+      flex-direction: column;
     }
 
     /* Header */
@@ -30,8 +44,8 @@
       justify-content: space-between;
       align-items: center;
       height: 48px;
-      padding: 0 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0 12px;
+      border-bottom: 1px solid var(--stroke);
       user-select: none;
     }
 
@@ -44,99 +58,225 @@
       height: 100%;
     }
 
-    .app-title { font-size: 14px; font-weight: 500; }
+    .app-title { 
+      font-size: 14px; 
+      font-weight: 400;
+    }
 
     .btn-close {
-      width: 24px;
-      height: 24px;
+      width: 16px;
+      height: 16px;
       background: transparent;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0;
     }
-    .btn-close:hover { background: rgba(255, 255, 255, 0.05); }
+    .btn-close:hover { opacity: 0.7; }
 
-    /* Main */
-    main { padding: 12px; }
-    .container { width: 100%; }
+    /* Main Content */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
 
     /* Init Section */
-    .init-section { text-align: center; padding: 20px 0; }
+    .init-section { text-align: center; padding: 20px; }
     .init-message { font-size: 14px; margin-bottom: 12px; }
-    .init-hint { font-size: 11px; color: rgba(248, 249, 251, 0.5); margin-top: 12px; }
-
-    /* Progress */
-    .progress-bar {
+    .init-hint { font-size: 11px; color: var(--fg2); margin-top: 12px; }
+    .init-progress-bar {
       height: 8px;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 4px;
       overflow: hidden;
     }
-    .progress-fill {
+    .init-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #3297ff, #4caf50);
+      background: linear-gradient(90deg, var(--brand), var(--success));
       border-radius: 4px;
       transition: width 0.3s ease;
       width: 0%;
     }
-    .progress-container { margin-top: 12px; }
-    .progress-info {
+
+    /* Queue Container */
+    .queue-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      padding-bottom: 72px;
       display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: rgba(248, 249, 251, 0.5);
-      margin-top: 6px;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    /* Form */
-    .form-row { display: flex; gap: 8px; }
+    .queue-container::-webkit-scrollbar {
+      width: 6px;
+    }
 
-    .input-url {
+    .queue-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .queue-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .queue-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Download Item */
+    .download-item {
+      background: var(--bg2);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .item-title {
+      font-size: 14px;
+      color: var(--fg1);
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      line-height: 24px;
+    }
+
+    .item-retry {
+      background: var(--brand);
+      border: none;
+      border-radius: 6px;
+      color: var(--fg1);
+      font-size: 12px;
+      padding: 4px 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .item-retry:hover {
+      opacity: 0.8;
+    }
+
+    .item-metadata {
+      font-size: 12px;
+      color: var(--fg2);
+      line-height: 16px;
+    }
+
+    .item-progress {
+      margin-top: 4px;
+    }
+
+    .progress-bar-container {
+      height: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), var(--success));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--fg1);
+      z-index: 1;
+    }
+
+    .item-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 4px;
+    }
+
+    /* Input Bar */
+    .input-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: var(--bg1);
+      border-top: 1px solid var(--stroke);
+      flex-shrink: 0;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    #urlInput {
       flex: 1;
       height: 36px;
       padding: 0 12px;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--bg2);
+      border: 1px solid var(--stroke);
       border-radius: 8px;
-      color: rgb(248, 249, 251);
+      color: var(--fg1);
+      font-size: 12px;
       outline: none;
     }
-    .input-url:focus { border-color: #3297ff; }
-    .input-url.error:focus { border-color: #f56c6c; }
 
-    .btn-download {
+    #urlInput:focus {
+      border-color: var(--brand);
+    }
+
+    #urlInput.error {
+      border-color: var(--error);
+    }
+
+    #urlInput::placeholder {
+      color: var(--fg2);
+    }
+
+    #addButton {
       height: 36px;
-      padding: 0 16px;
-      background: #3297ff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 12px;
+      background: var(--brand);
+      border: none;
       border-radius: 8px;
-      color: rgb(248, 249, 251);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-download:hover { background: #5aadff; }
-
-    /* Status */
-    #status {
-      font-size: 13px;
-      color: rgba(248, 249, 251, 0.5);
-      margin-top: 10px;
-      min-height: 1.2em;
-    }
-    #status.error { color: #f56c6c; }
-
-    .locate-link {
+      color: var(--fg1);
       font-size: 12px;
-      color: #3297ff;
-      margin-top: 4px;
+      font-weight: 500;
       cursor: pointer;
-      text-decoration: underline;
+      flex-shrink: 0;
     }
-    .locate-link:hover { color: #5aadff; }
+
+    #addButton:hover {
+      opacity: 0.9;
+    }
+
+    #addButton:active {
+      opacity: 0.8;
+    }
 
     /* Utilities */
     .hidden { display: none !important; }
@@ -149,14 +289,14 @@
     <!-- Header -->
     <header>
       <div class="draggable">
-        <img src="assets/logo.png" alt="Logo" width="24" height="24" />
-        <h1 id="appName" class="app-title">Video Downloader</h1>
+        <img src="assets/logo.png" alt="Logo" width="16" height="16" />
+        <h1 id="appName" class="app-title"></h1>
       </div>
       <div id="closeButton" class="btn-close">
-        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd"
             d="M12.7071 12.0001L16.8531 7.85413C17.0491 7.65813 17.0491 7.34213 16.8531 7.14613C16.6581 6.95113 16.3421 6.95113 16.1461 7.14613L12.0001 11.2931L7.85313 7.14613C7.65813 6.95113 7.34213 6.95113 7.14613 7.14613C6.95113 7.34213 6.95113 7.65813 7.14613 7.85413L11.2931 12.0001L7.14613 16.1461C6.95113 16.3421 6.95113 16.6581 7.14613 16.8541C7.24413 16.9511 7.37213 17.0001 7.50013 17.0001C7.62813 17.0001 7.75613 16.9511 7.85313 16.8541L12.0001 12.7071L16.1461 16.8541C16.2441 16.9511 16.3721 17.0001 16.5001 17.0001C16.6281 17.0001 16.7561 16.9511 16.8531 16.8541C17.0491 16.6581 17.0491 16.3421 16.8531 16.1461L12.7071 12.0001Z"
-            fill="#F7F8F8" />
+            fill="currentColor" />
         </svg>
       </div>
     </header>
@@ -164,39 +304,28 @@
     <!-- Main Content -->
     <main>
       <!-- Initialization UI -->
-      <div id="initContainer" class="container hidden">
+      <div id="initContainer" class="hidden">
         <div class="init-section">
-          <p id="initMessage" class="init-message">Initializing...</p>
-          <div class="progress-bar">
-            <div id="initProgressFill" class="progress-fill"></div>
+          <p id="initMessage" class="init-message"></p>
+          <div class="init-progress-bar">
+            <div id="initProgressFill" class="init-progress-fill"></div>
           </div>
-          <p class="init-hint">First-time setup requires downloading components, please wait...</p>
+          <p class="init-hint"></p>
         </div>
       </div>
 
       <!-- Main UI -->
-      <div id="mainContainer" class="container">
-        <form id="downloadForm" class="form-row">
-          <input type="text" id="videoUrl" class="input-url" placeholder="Paste any video URL..." />
-          <button type="submit" id="downloadBtn" class="btn-download">
-            <span>Download</span>
-          </button>
-        </form>
-
-        <!-- Progress Container -->
-        <div id="progressContainer" class="progress-container hidden">
-          <div class="progress-bar">
-            <div id="progressFill" class="progress-fill"></div>
-          </div>
-          <div class="progress-info">
-            <span id="progressPercent">0%</span>
-            <span id="progressSpeed"></span>
-            <span id="progressEta" class="eta"></span>
-          </div>
+      <div id="mainContainer">
+        <!-- Queue Container -->
+        <div id="queueContainer" class="queue-container">
+          <!-- Download items will be rendered here -->
         </div>
 
-        <div id="status"></div>
-        <a id="locateLink" class="locate-link hidden"></a>
+        <!-- Input Bar -->
+        <div class="input-bar">
+          <input type="text" id="urlInput" placeholder="" />
+          <button id="addButton"></button>
+        </div>
       </div>
     </main>
   </div>
