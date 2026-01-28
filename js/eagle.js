@@ -3,7 +3,6 @@
  * 处理与 Eagle 应用的交互
  */
 
-const { t } = require("./i18n");
 
 /**
  * 检查 Eagle 中是否已存在相同 URL 的视频
@@ -35,11 +34,11 @@ async function checkDuplicateByUrl(url) {
  */
 async function importToEagle(videoPath, metadata, sourceUrl) {
   if (typeof eagle === "undefined") {
-    throw new Error(t("eagleApiNotAvailable"));
+    throw new Error(t("error.eagleApiNotAvailable"));
   }
 
   const importOptions = {
-    name: metadata.title || t("downloadedVideo"),
+    name: metadata.title || t("error.downloadedVideo"),
     website: sourceUrl,
     tags: [metadata.extractor || "video"],
     annotation: metadata.description ? metadata.description.slice(0, 500) : "",
@@ -49,7 +48,7 @@ async function importToEagle(videoPath, metadata, sourceUrl) {
     const itemId = await eagle.item.addFromPath(videoPath, importOptions);
     return itemId;
   } catch (error) {
-    throw new Error(`${t("eagleImportFailed")}: ${error.message}`);
+    throw new Error(`${t("error.eagleImportFailed")}: ${error.message}`);
   }
 }
 

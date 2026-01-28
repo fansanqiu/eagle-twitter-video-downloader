@@ -4,12 +4,6 @@
  */
 
 // 导入模块
-const {
-  setCurrentLang,
-  detectLanguage,
-  t,
-  applyTranslations,
-} = require("./i18n");
 const { getFfmpegPath, isYtDlpInstalled, downloadYtDlp } = require("./binary");
 const queue = require("./queue");
 const ui = require("./ui");
@@ -18,14 +12,48 @@ const ui = require("./ui");
 let isInitialized = false;
 
 /**
+ * 初始化 i18next
+ */
+async function initI18n() {
+  const enTranslation = require("../_locales/en.json");
+  const zhCNTranslation = require("../_locales/zh_CN.json");
+
+  await i18next.init({
+    lng: eagle.app.locale || "en",
+    fallbackLng: "en",
+    resources: {
+      en: { translation: enTranslation },
+      zh_CN: { translation: zhCNTranslation },
+    },
+  });
+}
+
+/**
+ * 应用翻译到 UI 元素
+ */
+function applyTranslations() {
+  const appName = document.getElementById("appName");
+  if (appName) appName.textContent = i18next.t("ui.appTitle");
+
+  const videoUrl = document.getElementById("urlInput");
+  if (videoUrl) videoUrl.placeholder = i18next.t("ui.inputPlaceholder");
+
+  const addButton = document.getElementById("addButton");
+  if (addButton) addButton.textContent = i18next.t("ui.downloadBtn");
+
+  const initHint = document.querySelector(".init-hint");
+  if (initHint) initHint.textContent = i18next.t("init.hint");
+}
+
+/**
  * 初始化插件
  */
 eagle.onPluginCreate(async (plugin) => {
-  // 检测并设置语言
-  setCurrentLang(detectLanguage());
+  // 初始化 i18next
+  await initI18n();
 
   // 应用翻译到 UI
-  applyTranslations(false);
+  applyTranslations();
 
   // 更新主题
   ui.updateTheme();
@@ -75,14 +103,14 @@ async function initializeBinaries() {
 
   // 需要下载 yt-dlp
   ui.showInitUI();
-  ui.updateInitStatus(t("initDownloading"), 0);
+  ui.updateInitStatus(t("init.downloading"), 0);
 
   try {
     await downloadYtDlp((progress) => {
-      ui.updateInitStatus(t("initDownloading"), progress);
+      ui.updateInitStatus(t("init.downloading"), progress);
     });
 
-    ui.updateInitStatus(t("initComplete"), 100);
+    ui.updateInitStatus(t("init.complete"), 100);
 
     // 短暂延迟显示完成状态
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -91,8 +119,8 @@ async function initializeBinaries() {
     initializeQueue();
     ui.showMainUI();
   } catch (error) {
-    ui.updateInitStatus(`${t("initFailed")}: ${error.message}`, 0);
-    ui.showError(t("initNetworkError"));
+    ui.updateInitStatus(`${t("init.failed")}: ${error.message}`, 0);
+    ui.showError(t("init.networkError"));
   }
 }
 
@@ -126,12 +154,12 @@ function initializeQueue() {
  */
 function handleAddToQueue(url) {
   if (!isInitialized) {
-    ui.showInputError(t("notInitialized"));
+    ui.showInputError(t("error.notInitialized"));
     return;
   }
 
   if (!ui.isValidUrl(url)) {
-    ui.showInputError(t("invalidUrl"));
+    ui.showInputError(t("error.invalidUrl"));
     return;
   }
 

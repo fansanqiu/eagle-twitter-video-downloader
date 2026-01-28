@@ -9,7 +9,6 @@ const os = require("os");
 const { spawn } = require("child_process");
 
 const { getYtDlpPath, getFfmpegPath, BIN_DIR } = require("./binary");
-const { t } = require("./i18n");
 
 /**
  * 执行 yt-dlp 命令
@@ -19,7 +18,7 @@ function execYtDlp(args, onProgress, onOutput) {
     const ytdlp = getYtDlpPath();
 
     if (!fs.existsSync(ytdlp)) {
-      reject(new Error(t("ytdlpNotInstalled")));
+      reject(new Error(t("error.ytdlpNotInstalled")));
       return;
     }
 
@@ -71,14 +70,16 @@ function execYtDlp(args, onProgress, onOutput) {
     });
 
     proc.on("error", (error) => {
-      reject(new Error(`${t("failedToExecuteYtdlp")}: ${error.message}`));
+      reject(new Error(`${t("error.failedToExecuteYtdlp")}: ${error.message}`));
     });
 
     proc.on("close", (code) => {
       if (code === 0) {
         resolve(stdout);
       } else {
-        reject(new Error(`${t("ytdlpExitedWithCode")} ${code}: ${stderr}`));
+        reject(
+          new Error(`${t("error.ytdlpExitedWithCode")} ${code}: ${stderr}`),
+        );
       }
     });
   });
@@ -121,12 +122,12 @@ async function getVideoInfo(url) {
   const info = JSON.parse(output.trim().split("\n")[0]);
 
   return {
-    title: info.title || t("untitledVideo"),
+    title: info.title || t("error.untitledVideo"),
     description: info.description || "",
     duration: info.duration || 0,
     thumbnail: info.thumbnail || null,
-    uploader: info.uploader || info.channel || t("unknown"),
-    extractor: info.extractor || t("unknown"),
+    uploader: info.uploader || info.channel || t("error.unknown"),
+    extractor: info.extractor || t("error.unknown"),
     webpage_url: info.webpage_url || url,
     id: info.id || null,
   };
@@ -158,14 +159,17 @@ function getTempDir() {
  * 下载视频
  */
 async function downloadVideo(url, onProgress, onStatus) {
-  if (onStatus) onStatus(t("fetchingInfo"));
+  if (onStatus) onStatus(t("download.fetchingInfo"));
 
   let videoInfo;
   try {
     videoInfo = await getVideoInfo(url);
-    if (onStatus) onStatus(`${t("foundVideo")}: ${videoInfo.title}`);
+    if (onStatus) onStatus(`${t("download.foundVideo")}: ${videoInfo.title}`);
   } catch (error) {
-    videoInfo = { title: t("untitledVideo"), extractor: t("unknown") };
+    videoInfo = {
+      title: t("error.untitledVideo"),
+      extractor: t("error.unknown"),
+    };
   }
 
   const outputDir = getTempDir();
@@ -195,7 +199,7 @@ async function downloadVideo(url, onProgress, onStatus) {
     args.push("--ffmpeg-location", path.dirname(ffmpeg));
   }
 
-  if (onStatus) onStatus(t("downloading"));
+  if (onStatus) onStatus(t("ui.downloading"));
 
   await execYtDlp(args, onProgress);
 
@@ -209,7 +213,7 @@ async function downloadVideo(url, onProgress, onStatus) {
         filename: matchingFile,
       };
     }
-    throw new Error(t("fileNotFound"));
+    throw new Error(t("error.fileNotFound"));
   }
 
   return {

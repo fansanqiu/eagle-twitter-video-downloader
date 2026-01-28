@@ -3,7 +3,6 @@
  * 处理用户界面交互
  */
 
-const { t } = require("./i18n");
 
 /**
  * 更新 UI 主题
@@ -117,7 +116,7 @@ function updateProgress(progress) {
     progressSpeed.textContent = progress.currentSpeed;
   }
   if (progressEta && progress.eta) {
-    progressEta.textContent = `${t("remaining")}: ${progress.eta}`;
+    progressEta.textContent = `${t("progress.remaining")}: ${progress.eta}`;
   }
 
   if (button) {
@@ -178,8 +177,8 @@ function setButtonLoading(loading) {
   if (button) {
     button.disabled = loading;
     button.querySelector("span").textContent = loading
-      ? t("downloadingBtn")
-      : t("downloadBtn");
+      ? t("ui.downloadingBtn")
+      : t("ui.downloadBtn");
 
     if (loading) {
       button.style.backgroundSize = "0% 100%";
@@ -197,7 +196,7 @@ function setButtonLoading(loading) {
 function showRedownloadLink(url, performDownload) {
   const redownloadLink = document.getElementById("locateLink");
   if (redownloadLink) {
-    redownloadLink.textContent = t("clickToRedownload");
+    redownloadLink.textContent = t("error.clickToRedownload");
     redownloadLink.classList.remove("hidden");
     redownloadLink.onclick = async () => {
       hideRedownloadLink();
@@ -250,7 +249,7 @@ function renderDownloadItem(item) {
   const metadata =
     [item.source, item.format, item.resolution, item.fileSize]
       .filter((v) => v)
-      .join(" - ") || t("loading");
+      .join(" - ") || t("ui.loading");
 
   // 根据状态显示不同的进度条内容
   let progressContent = "";
@@ -258,11 +257,11 @@ function renderDownloadItem(item) {
 
   switch (item.state) {
     case "waiting":
-      statusText = t("waiting");
+      statusText = t("ui.waiting");
       progressContent = `<div class="progress-text">${statusText}</div>`;
       break;
     case "preparing":
-      statusText = t("preparing");
+      statusText = t("ui.preparing");
       progressContent = `<div class="progress-text">${statusText}</div>`;
       break;
     case "downloading":
@@ -273,14 +272,14 @@ function renderDownloadItem(item) {
             `;
       break;
     case "completed":
-      statusText = t("completed");
+      statusText = t("ui.completed");
       progressContent = `
                 <div class="progress-bar-fill" style="width: 100%"></div>
                 <div class="progress-text">${statusText}</div>
             `;
       break;
     case "error":
-      statusText = item.error || t("downloadFailed");
+      statusText = item.error || t("download.failed");
       break;
   }
 
@@ -288,7 +287,7 @@ function renderDownloadItem(item) {
   div.innerHTML = `
         <div class="item-header">
             <div class="item-title">${escapeHtml(item.title)}</div>
-            ${item.state === "error" ? `<button class="item-retry">${t("retry")}</button>` : ""}
+            ${item.state === "error" ? `<button class="item-retry">${t("ui.retry")}</button>` : ""}
         </div>
         <div class="item-metadata">${escapeHtml(metadata)}</div>
         ${
@@ -365,12 +364,12 @@ function setupInputBar() {
     const url = urlInput.value.trim();
 
     if (!url) {
-      showInputError(t("pleaseEnterUrl"));
+      showInputError(t("error.emptyUrl"));
       return;
     }
 
     if (!isValidUrl(url)) {
-      showInputError(t("invalidUrl"));
+      showInputError(t("error.invalidUrl"));
       return;
     }
 
@@ -419,7 +418,7 @@ function clearInputError() {
   const urlInput = document.getElementById("urlInput");
   if (urlInput) {
     urlInput.classList.remove("error");
-    urlInput.setAttribute("placeholder", t("pasteVideoUrl"));
+    urlInput.setAttribute("placeholder", t("ui.inputPlaceholder"));
   }
 }
 

@@ -4,7 +4,6 @@
  */
 
 const downloader = require("./downloader");
-const { t } = require("./i18n");
 
 // 队列状态
 const queueState = {
@@ -87,7 +86,7 @@ function addToQueue(url) {
   const item = {
     id: queueState.nextId++,
     url: url,
-    title: t("loading"),
+    title: t("ui.loading"),
     source: "",
     format: "",
     resolution: "",
@@ -151,11 +150,11 @@ async function startDownload(itemId) {
 
     // 更新项目元数据
     updateItemState(itemId, {
-      title: videoInfo.title || t("untitledVideo"),
-      source: videoInfo.extractor || t("unknown"),
+      title: videoInfo.title || t("error.untitledVideo"),
+      source: videoInfo.extractor || t("error.unknown"),
       format: "MP4",
       resolution: "1080p",
-      fileSize: t("unknown"),
+      fileSize: t("error.unknown"),
       state: "downloading",
     });
 
@@ -238,7 +237,7 @@ function handleDownloadError(id, error) {
   // 更新状态为 error
   updateItemState(id, {
     state: "error",
-    error: error.message || t("downloadFailed"),
+    error: error.message || t("download.failed"),
     speed: "",
     eta: "",
   });

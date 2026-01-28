@@ -1,0 +1,54 @@
+{
+  "manifest": {
+    "app": {
+      "name": "Video Downloader"
+    }
+  },
+  "ui": {
+    "appTitle": "Video Downloader",
+    "inputPlaceholder": "Paste any video URL...",
+    "downloadBtn": "Download",
+    "downloadingBtn": "Downloading...",
+    "preparing": "Preparing...",
+    "waiting": "Waiting...",
+    "downloading": "Downloading...",
+    "completed": "Complete",
+    "retry": "Retry",
+    "addToQueue": "Add to Queue",
+    "loading": "Loading..."
+  },
+  "init": {
+    "downloading": "Downloading yt-dlp...",
+    "complete": "Initialization complete!",
+    "failed": "Initialization failed",
+    "hint": "First-time setup requires downloading components, please wait...",
+    "networkError": "Initialization failed. Please check your network connection."
+  },
+  "download": {
+    "fetchingInfo": "Fetching video information...",
+    "foundVideo": "Found video",
+    "complete": "Download complete, importing to Eagle...",
+    "importSuccess": "Import successful",
+    "failed": "Download failed"
+  },
+  "error": {
+    "notInitialized": "Plugin not yet initialized",
+    "emptyUrl": "Please enter a video URL",
+    "invalidUrl": "Please enter a valid video URL",
+    "fileNotFound": "Download complete but file not found",
+    "eagleImportFailed": "Failed to import to Eagle",
+    "duplicateFound": "This video already exists in library",
+    "checkingDuplicate": "Checking for duplicates...",
+    "clickToRedownload": "Click to re-download and import",
+    "eagleApiNotAvailable": "Eagle API not available",
+    "untitledVideo": "Untitled Video",
+    "downloadedVideo": "Downloaded Video",
+    "ytdlpNotInstalled": "yt-dlp not installed",
+    "failedToExecuteYtdlp": "Failed to execute yt-dlp",
+    "ytdlpExitedWithCode": "yt-dlp exited with code",
+    "unknown": "Unknown"
+  },
+  "progress": {
+    "remaining": "Remaining"
+  }
+}
