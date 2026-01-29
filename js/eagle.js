@@ -34,11 +34,11 @@ async function checkDuplicateByUrl(url) {
  */
 async function importToEagle(videoPath, metadata, sourceUrl) {
   if (typeof eagle === "undefined") {
-    throw new Error(t("error.eagleApiNotAvailable"));
+    throw new Error(i18next.t("error.eagleApiNotAvailable"));
   }
 
   const importOptions = {
-    name: metadata.title || t("error.downloadedVideo"),
+    name: metadata.title || i18next.t("error.downloadedVideo"),
     website: sourceUrl,
     tags: [metadata.extractor || "video"],
     annotation: metadata.description ? metadata.description.slice(0, 500) : "",
@@ -48,7 +48,7 @@ async function importToEagle(videoPath, metadata, sourceUrl) {
     const itemId = await eagle.item.addFromPath(videoPath, importOptions);
     return itemId;
   } catch (error) {
-    throw new Error(`${t("error.eagleImportFailed")}: ${error.message}`);
+    throw new Error(`${i18next.t("error.eagleImportFailed")}: ${error.message}`);
   }
 }
 

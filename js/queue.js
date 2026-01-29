@@ -86,7 +86,7 @@ function addToQueue(url) {
   const item = {
     id: queueState.nextId++,
     url: url,
-    title: t("ui.loading"),
+    title: i18next.t("ui.loading"),
     source: "",
     format: "",
     resolution: "",
@@ -150,11 +150,11 @@ async function startDownload(itemId) {
 
     // 更新项目元数据
     updateItemState(itemId, {
-      title: videoInfo.title || t("error.untitledVideo"),
-      source: videoInfo.extractor || t("error.unknown"),
+      title: videoInfo.title || i18next.t("error.untitledVideo"),
+      source: videoInfo.extractor || i18next.t("error.unknown"),
       format: "MP4",
       resolution: "1080p",
-      fileSize: t("error.unknown"),
+      fileSize: i18next.t("error.unknown"),
       state: "downloading",
     });
 
@@ -237,7 +237,7 @@ function handleDownloadError(id, error) {
   // 更新状态为 error
   updateItemState(id, {
     state: "error",
-    error: error.message || t("download.failed"),
+    error: error.message || i18next.t("download.failed"),
     speed: "",
     eta: "",
   });
@@ -269,6 +269,36 @@ function retryDownload(itemId) {
   });
 
   // 尝试启动下载
+  processQueue();
+}
+
+/**
+ * 取消下载
+ */
+function cancelDownload(itemId) {
+  const item = getItemById(itemId);
+  if (!item) return;
+
+  // 只能取消 preparing 或 downloading 状态的下载
+  if (item.state !== "preparing" && item.state !== "downloading") {
+    return;
+  }
+
+  // 取消 yt-dlp 进程（如果有）
+  if (downloader.cancelDownload) {
+    downloader.cancelDownload(itemId);
+  }
+
+  // 减少活动槽位
+  queueState.activeSlots--;
+
+  // 从队列中移除
+  const index = queueState.items.findIndex((i) => i.id === itemId);
+  if (index !== -1) {
+    queueState.items.splice(index, 1);
+  }
+
+  // 处理下一个等待的项目
   processQueue();
 }
 
@@ -339,6 +369,7 @@ module.exports = {
   initialize,
   addToQueue,
   retryDownload,
+  cancelDownload,
   getQueueState,
   clearCompleted,
   onStateChange,

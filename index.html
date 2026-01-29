@@ -15,7 +15,11 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    html, body { height: 100%; overflow: hidden; }
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
 
     /* CSS Variables - Design System */
     :root {
@@ -55,8 +59,8 @@
       flex: 1;
     }
 
-    .app-title { 
-      font-size: 14px; 
+    .app-title {
+      font-size: 14px;
       line-height: 16px;
       font-weight: 400;
     }
@@ -72,7 +76,10 @@
       justify-content: center;
       padding: 0;
     }
-    .btn-close:hover { opacity: 0.7; }
+
+    .btn-close:hover {
+      opacity: 0.7;
+    }
 
     /* Main Content */
     main {
@@ -84,15 +91,29 @@
     }
 
     /* Init Section */
-    .init-section { text-align: center; padding: 20px; }
-    .init-message { font-size: 14px; margin-bottom: 12px; }
-    .init-hint { font-size: 11px; color: var(--fg2); margin-top: 12px; }
+    .init-section {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .init-message {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .init-hint {
+      font-size: 11px;
+      color: var(--fg2);
+      margin-top: 12px;
+    }
+
     .init-progress-bar {
       height: 8px;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 4px;
       overflow: hidden;
     }
+
     .init-progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--brand), var(--success));
@@ -101,42 +122,41 @@
       width: 0%;
     }
 
+    /* Main Container */
+    #mainContainer {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
     /* Queue Container */
     .queue-container {
       flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      padding-bottom: 72px;
+      overflow-y: overlay;
+      padding: 0 12px 12px 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      min-height: 0;
     }
 
     .queue-container::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .queue-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .queue-container::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-    }
-
-    .queue-container::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
+      display: none;
     }
 
     /* Download Item */
     .download-item {
       background: var(--bg2);
       border-radius: 10px;
-      padding: 12px;
+      padding: 2px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 2px;
+    }
+
+    .item-content {
+      padding: 0 8px;
     }
 
     .item-header {
@@ -147,7 +167,7 @@
     }
 
     .item-title {
-      font-size: 14px;
+      font-size: 12px;
       color: var(--fg1);
       font-weight: 400;
       white-space: nowrap;
@@ -207,8 +227,29 @@
       transform: translate(-50%, -50%);
       font-size: 10px;
       font-weight: 500;
-      color: var(--fg1);
+      color: var(--fg2);
       z-index: 1;
+    }
+
+    .progress-text.error {
+      color: var(--error);
+    }
+
+    /* Hover interaction for interactive progress */
+    .item-progress.interactive {
+      cursor: pointer;
+    }
+
+    .item-progress .progress-hover {
+      display: none;
+    }
+
+    .item-progress.interactive:hover .progress-status {
+      display: none;
+    }
+
+    .item-progress.interactive:hover .progress-hover {
+      display: block;
     }
 
     .item-error {
@@ -225,30 +266,18 @@
       background: var(--bg1);
       border-top: 1px solid var(--stroke);
       flex-shrink: 0;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
     }
 
     #urlInput {
       flex: 1;
-      height: 36px;
+      height: 32px;
       padding: 0 12px;
       background: var(--bg2);
-      border: 1px solid var(--stroke);
+      border: none;
       border-radius: 8px;
       color: var(--fg1);
       font-size: 12px;
       outline: none;
-    }
-
-    #urlInput:focus {
-      border-color: var(--brand);
-    }
-
-    #urlInput.error {
-      border-color: var(--error);
     }
 
     #urlInput::placeholder {
@@ -256,7 +285,7 @@
     }
 
     #addButton {
-      height: 36px;
+      height: 32px;
       padding: 8px 12px;
       background: var(--brand);
       border: none;
@@ -277,7 +306,9 @@
     }
 
     /* Utilities */
-    .hidden { display: none !important; }
+    .hidden {
+      display: none !important;
+    }
   </style>
   <script type="text/javascript" src="dist/plugin.js"></script>
 </head>

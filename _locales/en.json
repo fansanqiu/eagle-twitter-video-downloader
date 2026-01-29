@@ -14,6 +14,7 @@
     "downloading": "Downloading...",
     "completed": "Complete",
     "retry": "Retry",
+    "cancel": "Cancel",
     "addToQueue": "Add to Queue",
     "loading": "Loading..."
   },

@@ -14,6 +14,7 @@
     "downloading": "下载中...",
     "completed": "完成",
     "retry": "重试",
+    "cancel": "取消",
     "addToQueue": "添加到队列",
     "loading": "加载中..."
   },

@@ -103,14 +103,14 @@ async function initializeBinaries() {
 
   // 需要下载 yt-dlp
   ui.showInitUI();
-  ui.updateInitStatus(t("init.downloading"), 0);
+  ui.updateInitStatus(i18next.t("init.downloading"), 0);
 
   try {
     await downloadYtDlp((progress) => {
-      ui.updateInitStatus(t("init.downloading"), progress);
+      ui.updateInitStatus(i18next.t("init.downloading"), progress);
     });
 
-    ui.updateInitStatus(t("init.complete"), 100);
+    ui.updateInitStatus(i18next.t("init.complete"), 100);
 
     // 短暂延迟显示完成状态
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -119,8 +119,8 @@ async function initializeBinaries() {
     initializeQueue();
     ui.showMainUI();
   } catch (error) {
-    ui.updateInitStatus(`${t("init.failed")}: ${error.message}`, 0);
-    ui.showError(t("init.networkError"));
+    ui.updateInitStatus(`${i18next.t("init.failed")}: ${error.message}`, 0);
+    ui.showError(i18next.t("init.networkError"));
   }
 }
 
@@ -154,12 +154,12 @@ function initializeQueue() {
  */
 function handleAddToQueue(url) {
   if (!isInitialized) {
-    ui.showInputError(t("error.notInitialized"));
+    ui.showInputError(i18next.t("error.notInitialized"));
     return;
   }
 
   if (!ui.isValidUrl(url)) {
-    ui.showInputError(t("error.invalidUrl"));
+    ui.showInputError(i18next.t("error.invalidUrl"));
     return;
   }
 
