@@ -1,15 +1,19 @@
 /**
  * Eagle 视频下载插件
- * 主入口 - 处理插件初始化和队列管理
+ * 主入口 - 处理插件初始化和单下载管理
  */
 
 // 导入模块
 const { getFfmpegPath, isYtDlpInstalled, downloadYtDlp } = require("./binary");
-const queue = require("./queue");
+const downloader = require("./downloader");
+const eagleApi = require("./eagle");
 const ui = require("./ui");
 
 // 状态管理
 let isInitialized = false;
+
+// 当前下载状态
+let currentDownload = null;
 
 /**
  * 初始化 i18next
@@ -81,9 +85,21 @@ function setupEventListeners() {
     window.close();
   });
 
-  // 监听添加到队列事件
-  document.addEventListener("addToQueue", (e) => {
-    handleAddToQueue(e.detail.url);
+  // 监听下载事件
+  document.addEventListener("startDownload", (e) => {
+    handleDownload(e.detail.url);
+  });
+
+  // 监听取消事件
+  document.addEventListener("cancelDownload", () => {
+    cancelCurrentDownload();
+  });
+
+  // 监听重试事件
+  document.addEventListener("retryDownload", () => {
+    if (currentDownload && currentDownload.url) {
+      handleDownload(currentDownload.url);
+    }
   });
 }
 
@@ -96,7 +112,7 @@ async function initializeBinaries() {
 
   if (isYtDlpInstalled()) {
     isInitialized = true;
-    initializeQueue();
+    initializeMainUI();
     ui.showMainUI();
     return;
   }
@@ -116,31 +132,22 @@ async function initializeBinaries() {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     isInitialized = true;
-    initializeQueue();
+    initializeMainUI();
     ui.showMainUI();
   } catch (error) {
     ui.updateInitStatus(`${i18next.t("init.failed")}: ${error.message}`, 0);
-    ui.showError(i18next.t("init.networkError"));
   }
 }
 
 /**
- * 初始化队列管理器
+ * 初始化主 UI
  */
-function initializeQueue() {
-  // 初始化队列
-  queue.initialize();
-
-  // 设置队列状态变更监听器
-  queue.onStateChange((item) => {
-    ui.updateDownloadItem(item.id, item);
-  });
-
+function initializeMainUI() {
   // 设置输入栏
   ui.setupInputBar();
 
-  // 渲染初始队列（可能包含恢复的项目）
-  ui.renderQueueUI();
+  // 隐藏下载状态区域
+  ui.hideDownloadStatus();
 
   // 聚焦输入框
   const urlInput = document.getElementById("urlInput");
@@ -150,9 +157,9 @@ function initializeQueue() {
 }
 
 /**
- * 处理添加到队列
+ * 处理下载请求
  */
-function handleAddToQueue(url) {
+async function handleDownload(url) {
   if (!isInitialized) {
     ui.showInputError(i18next.t("error.notInitialized"));
     return;
@@ -163,22 +170,94 @@ function handleAddToQueue(url) {
     return;
   }
 
-  // 添加到队列
-  const itemId = queue.addToQueue(url);
+  // 如果有正在进行的下载，不处理新请求
+  if (currentDownload && (currentDownload.state === "preparing" || currentDownload.state === "downloading")) {
+    return;
+  }
 
   // 清空输入栏
   ui.clearInputBar();
 
-  // 滚动到顶部
-  ui.scrollToTop();
+  // 初始化下载状态
+  currentDownload = {
+    url: url,
+    title: i18next.t("ui.loading"),
+    source: "",
+    format: "",
+    resolution: "",
+    state: "preparing",
+    progress: 0,
+    error: null,
+  };
+
+  // 显示下载状态
+  ui.showDownloadStatus();
+  ui.renderDownloadStatus(currentDownload);
+
+  try {
+    // 获取视频元数据
+    const videoInfo = await downloader.getVideoInfo(url);
+
+    // 更新项目元数据
+    currentDownload.title = videoInfo.title || i18next.t("error.untitledVideo");
+    currentDownload.source = videoInfo.extractor || i18next.t("error.unknown");
+    currentDownload.format = "MP4";
+    currentDownload.resolution = "1080p";
+    currentDownload.state = "downloading";
+
+    ui.renderDownloadStatus(currentDownload);
+
+    // 开始下载
+    const result = await downloader.downloadVideo(
+      url,
+      (progress) => {
+        if (currentDownload && currentDownload.state === "downloading") {
+          currentDownload.progress = progress.percent || 0;
+          ui.renderDownloadStatus(currentDownload);
+        }
+      },
+      (status) => {
+        // 状态更新（可选）
+      }
+    );
+
+    // 下载完成
+    currentDownload.state = "completed";
+    currentDownload.progress = 100;
+    ui.renderDownloadStatus(currentDownload);
+
+    // 导入到 Eagle
+    try {
+      await eagleApi.importToEagle(result.path, result.metadata, url);
+      // 清理临时文件
+      downloader.cleanup(result.path);
+    } catch (error) {
+      console.error("Eagle import error:", error);
+    }
+
+  } catch (error) {
+    // 下载失败
+    if (currentDownload) {
+      currentDownload.state = "error";
+      currentDownload.error = error.message || i18next.t("download.failed");
+      ui.renderDownloadStatus(currentDownload);
+    }
+  }
 }
 
-// 在窗口关闭时清空历史记录
-window.addEventListener("beforeunload", () => {
-  // 清空 localStorage 中的队列历史记录
-  try {
-    localStorage.removeItem("eagle-video-downloader-queue");
-  } catch (error) {
-    console.error("Failed to clear queue history:", error);
+/**
+ * 取消当前下载
+ */
+function cancelCurrentDownload() {
+  if (!currentDownload) return;
+
+  if (currentDownload.state !== "preparing" && currentDownload.state !== "downloading") {
+    return;
   }
-});
+
+  // TODO: 实现取消 yt-dlp 进程的逻辑
+
+  // 重置状态
+  currentDownload = null;
+  ui.hideDownloadStatus();
+}

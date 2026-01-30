@@ -62,12 +62,19 @@ This is a one-time download. Please wait for the initialization to complete.
 ### Project Structure
 
 ```
-├── index.html       # UI with embedded CSS
-├── js/plugin.js     # Main plugin source
-├── dist/plugin.js   # Bundled output (esbuild)
-├── bin/             # yt-dlp binary (auto-downloaded)
-├── assets/          # Logo and icons
-└── manifest.json    # Eagle plugin config
+├── index.html           # UI with embedded CSS
+├── js/
+│   ├── plugin.js        # Main entry point
+│   ├── ui.js            # UI management module
+│   ├── queue.js         # Download queue management
+│   ├── downloader.js    # Video download logic
+│   ├── binary.js        # Binary setup (yt-dlp/ffmpeg)
+│   └── eagle.js         # Eagle API integration
+├── dist/plugin.js       # Bundled output (esbuild)
+├── bin/                 # yt-dlp & ffmpeg binaries (auto-downloaded)
+├── _locales/            # Internationalization files
+├── assets/              # Logo and icons
+└── manifest.json        # Eagle plugin config
 ```
 
 ### Commands

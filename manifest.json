@@ -5,9 +5,18 @@
   "arch": "all",
   "name": "{{manifest.app.name}}",
   "logo": "assets/logo.png",
-  "keywords": ["video", "download", "youtube", "twitter", "yt-dlp"],
+  "keywords": [
+    "video",
+    "download",
+    "youtube",
+    "twitter",
+    "yt-dlp"
+  ],
   "fallbackLanguage": "en",
-  "languages": ["en", "zh_CN"],
+  "languages": [
+    "en",
+    "zh_CN"
+  ],
   "devTools": false,
   "main": {
     "url": "index.html",
