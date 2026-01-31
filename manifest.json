@@ -21,7 +21,7 @@
   "main": {
     "url": "index.html",
     "width": 400,
-    "height": 600,
+    "height": 84,
     "resizable": false,
     "frame": false,
     "vibrancy": true

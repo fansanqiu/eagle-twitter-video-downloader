@@ -42,8 +42,7 @@ function applyTranslations() {
   const videoUrl = document.getElementById("urlInput");
   if (videoUrl) videoUrl.placeholder = i18next.t("ui.inputPlaceholder");
 
-  const addButton = document.getElementById("addButton");
-  if (addButton) addButton.textContent = i18next.t("ui.downloadBtn");
+
 
   const initHint = document.querySelector(".init-hint");
   if (initHint) initHint.textContent = i18next.t("init.hint");
@@ -190,6 +189,9 @@ async function handleDownload(url) {
     error: null,
   };
 
+  // 设置输入栏为准备状态
+  ui.setInputBarState("preparing");
+
   // 显示下载状态
   ui.showDownloadStatus();
   ui.renderDownloadStatus(currentDownload);
@@ -204,6 +206,9 @@ async function handleDownload(url) {
     currentDownload.format = "MP4";
     currentDownload.resolution = "1080p";
     currentDownload.state = "downloading";
+
+    // 设置输入栏为下载状态
+    ui.setInputBarState("downloading");
 
     ui.renderDownloadStatus(currentDownload);
 
@@ -226,6 +231,9 @@ async function handleDownload(url) {
     currentDownload.progress = 100;
     ui.renderDownloadStatus(currentDownload);
 
+    // 重置输入栏状态
+    ui.resetInputBar();
+
     // 导入到 Eagle
     try {
       await eagleApi.importToEagle(result.path, result.metadata, url);
@@ -241,6 +249,8 @@ async function handleDownload(url) {
       currentDownload.state = "error";
       currentDownload.error = error.message || i18next.t("download.failed");
       ui.renderDownloadStatus(currentDownload);
+      // 设置输入栏为错误状态
+      ui.setInputBarState("error", currentDownload.error);
     }
   }
 }

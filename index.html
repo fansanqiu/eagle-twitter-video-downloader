@@ -23,8 +23,8 @@
 
     /* CSS Variables - Design System */
     :root {
-      --bg1: #191a1d;
-      --bg2: #131416;
+      --bg1: #20212C;
+      --bg2: #414250;
       --fg1: #ffffff;
       --fg2: rgba(255, 255, 255, 0.4);
       --brand: #3197ff;
@@ -249,15 +249,19 @@
     /* Input Bar */
     .input-bar {
       display: flex;
-      gap: 8px;
-      padding: 12px;
+      gap: 12px;
+      padding: 0 12px 12px;
       background: var(--bg1);
-      border-top: 1px solid var(--stroke);
       flex-shrink: 0;
     }
 
-    #urlInput {
+    .input-wrapper {
       flex: 1;
+      position: relative;
+    }
+
+    #urlInput {
+      width: 100%;
       height: 32px;
       padding: 0 12px;
       background: var(--bg2);
@@ -272,25 +276,77 @@
       color: var(--fg2);
     }
 
-    #addButton {
-      height: 32px;
-      width: 90px;
-      background: var(--brand);
-      border: none;
-      border-radius: 8px;
+    /* Input Overlay - preparing/downloading state */
+    .input-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay-text {
       color: var(--fg1);
       font-size: 12px;
-      font-weight: 500;
+    }
+
+    #addButton {
+      border: none;
+      background: none;
       cursor: pointer;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      position: relative;
     }
 
     #addButton:hover {
-      opacity: 0.9;
+      opacity: 0.7;
     }
 
     #addButton:active {
-      opacity: 0.8;
+      opacity: 0.5;
+    }
+
+    /* Button disabled state */
+    #addButton.disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    /* Error state with tooltip */
+    #addButton.error {
+      opacity: 1;
+    }
+
+    .error-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg2);
+      color: var(--fg1);
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 10px;
+      line-height: 14px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      margin-bottom: 4px;
+    }
+
+    #addButton.error:hover .error-tooltip {
+      opacity: 1;
     }
 
     /* Utilities */
@@ -327,18 +383,17 @@
         </div>
       </div>
 
-      <!-- Main UI -->
-      <div id="mainContainer">
-        <!-- Download Status Container -->
-        <div id="downloadContainer" class="download-container hidden">
-          <!-- Download status will be rendered here -->
-        </div>
-
-        <!-- Input Bar -->
-        <div class="input-bar">
+      <!-- Input Bar -->
+      <div class="input-bar">
+        <div class="input-wrapper">
           <input type="text" id="urlInput" placeholder="" />
-          <button id="addButton"></button>
+          <div class="input-overlay hidden">
+            <span class="overlay-text">Preparing...</span>
+          </div>
         </div>
+        <button id="addButton">
+          <img src="assets/icon_download.svg" width="16" height="16" alt="Download" />
+        </button>
       </div>
     </main>
   </div>

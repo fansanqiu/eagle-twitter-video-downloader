@@ -280,6 +280,66 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+/**
+ * 设置输入栏状态
+ * @param {string} state - 'idle' | 'preparing' | 'downloading' | 'error'
+ * @param {string} errorMessage - 错误信息（仅 error 状态使用）
+ */
+function setInputBarState(state, errorMessage = "") {
+  const addButton = document.getElementById("addButton");
+  const inputOverlay = document.querySelector(".input-overlay");
+  const overlayText = document.querySelector(".overlay-text");
+  const buttonImg = addButton?.querySelector("img");
+
+  // 移除所有状态
+  addButton?.classList.remove("disabled", "error");
+  inputOverlay?.classList.add("hidden");
+
+  // 移除错误 tooltip
+  const existingTooltip = addButton?.querySelector(".error-tooltip");
+  if (existingTooltip) existingTooltip.remove();
+
+  switch (state) {
+    case "preparing":
+      addButton?.classList.add("disabled");
+      inputOverlay?.classList.remove("hidden");
+      if (overlayText) overlayText.textContent = "Preparing...";
+      if (buttonImg) buttonImg.src = "assets/icon_download.svg";
+      break;
+
+    case "downloading":
+      addButton?.classList.add("disabled");
+      inputOverlay?.classList.remove("hidden");
+      if (overlayText) overlayText.textContent = "Downloading...";
+      if (buttonImg) buttonImg.src = "assets/icon_download.svg";
+      break;
+
+    case "error":
+      if (buttonImg) buttonImg.src = "assets/icon_error.svg";
+      addButton?.classList.add("error");
+      // 添加 tooltip
+      if (addButton && errorMessage) {
+        const tooltip = document.createElement("span");
+        tooltip.className = "error-tooltip";
+        tooltip.textContent = errorMessage;
+        addButton.appendChild(tooltip);
+      }
+      break;
+
+    case "idle":
+    default:
+      if (buttonImg) buttonImg.src = "assets/icon_download.svg";
+      break;
+  }
+}
+
+/**
+ * 重置输入栏到初始状态
+ */
+function resetInputBar() {
+  setInputBarState("idle");
+}
+
 module.exports = {
   updateTheme,
   showInitUI,
@@ -293,4 +353,6 @@ module.exports = {
   clearInputBar,
   showInputError,
   clearInputError,
+  setInputBarState,
+  resetInputBar,
 };
