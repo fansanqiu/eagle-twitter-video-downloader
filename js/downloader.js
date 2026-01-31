@@ -157,19 +157,29 @@ function getTempDir() {
 
 /**
  * 下载视频
+ * @param {string} url - 视频 URL
+ * @param {Function} onProgress - 进度回调
+ * @param {Function} onStatus - 状态回调
+ * @param {Object} preloadedInfo - 可选，预先获取的视频信息，避免重复请求
  */
-async function downloadVideo(url, onProgress, onStatus) {
-  if (onStatus) onStatus(i18next.t("download.fetchingInfo"));
-
+async function downloadVideo(url, onProgress, onStatus, preloadedInfo = null) {
   let videoInfo;
-  try {
-    videoInfo = await getVideoInfo(url);
-    if (onStatus) onStatus(`${i18next.t("download.foundVideo")}: ${videoInfo.title}`);
-  } catch (error) {
-    videoInfo = {
-      title: i18next.t("error.untitledVideo"),
-      extractor: i18next.t("error.unknown"),
-    };
+
+  if (preloadedInfo) {
+    // 使用预先获取的信息
+    videoInfo = preloadedInfo;
+  } else {
+    // 需要获取信息
+    if (onStatus) onStatus(i18next.t("download.fetchingInfo"));
+    try {
+      videoInfo = await getVideoInfo(url);
+      if (onStatus) onStatus(`${i18next.t("download.foundVideo")}: ${videoInfo.title}`);
+    } catch (error) {
+      videoInfo = {
+        title: i18next.t("error.untitledVideo"),
+        extractor: i18next.t("error.unknown"),
+      };
+    }
   }
 
   const outputDir = getTempDir();

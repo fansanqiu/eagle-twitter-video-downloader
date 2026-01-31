@@ -145,9 +145,6 @@ function initializeMainUI() {
   // 设置输入栏
   ui.setupInputBar();
 
-  // 隐藏下载状态区域
-  ui.hideDownloadStatus();
-
   // 聚焦输入框
   const urlInput = document.getElementById("urlInput");
   if (urlInput) {
@@ -160,12 +157,12 @@ function initializeMainUI() {
  */
 async function handleDownload(url) {
   if (!isInitialized) {
-    ui.showInputError(i18next.t("error.notInitialized"));
+    ui.setInputBarState("error", i18next.t("error.notInitialized"));
     return;
   }
 
   if (!ui.isValidUrl(url)) {
-    ui.showInputError(i18next.t("error.invalidUrl"));
+    ui.setInputBarState("error", i18next.t("error.invalidUrl"));
     return;
   }
 
@@ -173,9 +170,6 @@ async function handleDownload(url) {
   if (currentDownload && (currentDownload.state === "preparing" || currentDownload.state === "downloading")) {
     return;
   }
-
-  // 清空输入栏
-  ui.clearInputBar();
 
   // 初始化下载状态
   currentDownload = {
@@ -192,10 +186,6 @@ async function handleDownload(url) {
   // 设置输入栏为准备状态
   ui.setInputBarState("preparing");
 
-  // 显示下载状态
-  ui.showDownloadStatus();
-  ui.renderDownloadStatus(currentDownload);
-
   try {
     // 获取视频元数据
     const videoInfo = await downloader.getVideoInfo(url);
@@ -210,29 +200,27 @@ async function handleDownload(url) {
     // 设置输入栏为下载状态
     ui.setInputBarState("downloading");
 
-    ui.renderDownloadStatus(currentDownload);
-
-    // 开始下载
+    // 开始下载（传入已获取的 videoInfo，避免重复请求）
     const result = await downloader.downloadVideo(
       url,
       (progress) => {
         if (currentDownload && currentDownload.state === "downloading") {
           currentDownload.progress = progress.percent || 0;
-          ui.renderDownloadStatus(currentDownload);
         }
       },
-      (status) => {
-        // 状态更新（可选）
-      }
+      null, // 不需要状态回调，已在 UI 中处理
+      videoInfo // 传入预获取的视频信息
     );
 
     // 下载完成
     currentDownload.state = "completed";
     currentDownload.progress = 100;
-    ui.renderDownloadStatus(currentDownload);
 
-    // 重置输入栏状态
-    ui.resetInputBar();
+    // 设置输入栏为完成状态
+    ui.setInputBarState("completed");
+
+    // 清空输入栏内容
+    ui.clearInputBar();
 
     // 导入到 Eagle
     try {
@@ -248,7 +236,6 @@ async function handleDownload(url) {
     if (currentDownload) {
       currentDownload.state = "error";
       currentDownload.error = error.message || i18next.t("download.failed");
-      ui.renderDownloadStatus(currentDownload);
       // 设置输入栏为错误状态
       ui.setInputBarState("error", currentDownload.error);
     }
@@ -269,5 +256,4 @@ function cancelCurrentDownload() {
 
   // 重置状态
   currentDownload = null;
-  ui.hideDownloadStatus();
 }

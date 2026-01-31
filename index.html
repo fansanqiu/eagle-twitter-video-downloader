@@ -25,12 +25,12 @@
     :root {
       --bg1: #20212C;
       --bg2: #414250;
+      --bg3: #000000;
       --fg1: #ffffff;
       --fg2: rgba(255, 255, 255, 0.4);
       --brand: #3197ff;
-      --stroke: rgba(255, 255, 255, 0.04);
       --error: #f56c6c;
-      --success: #4caf50;
+      --success: #4BD951;
     }
 
     /* Layout */
@@ -93,7 +93,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
     }
 
@@ -129,139 +129,20 @@
       width: 0%;
     }
 
-    /* Main Container */
-    #mainContainer {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    /* Download Container */
-    .download-container {
-      flex: 1;
-      padding: 0 12px 12px 12px;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    /* Download Item */
-    .download-item {
-      background: var(--bg2);
-      border-radius: 10px;
-      padding: 2px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .item-content {
-      padding: 0 8px;
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .item-title {
-      font-size: 12px;
-      color: var(--fg1);
-      font-weight: 400;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1;
-      line-height: 24px;
-    }
-
-    .item-metadata {
-      font-size: 12px;
-      color: var(--fg2);
-      line-height: 16px;
-      display: flex;
-      gap: 4px;
-    }
-
-    .metadata-tag:not(:last-child)::after {
-      content: "·";
-      margin-left: 4px;
-      opacity: 0.6;
-    }
-
-    .item-progress {
-      margin-top: 4px;
-    }
-
-    .progress-bar-container {
-      height: 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 999px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--brand), var(--success));
-      border-radius: 999px;
-      transition: width 0.3s ease;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .progress-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--fg2);
-      z-index: 1;
-    }
-
-    .progress-text.error {
-      color: var(--error);
-    }
-
-    /* Hover interaction for interactive progress */
-    .item-progress.interactive {
-      cursor: pointer;
-    }
-
-    .item-progress .progress-hover {
-      display: none;
-    }
-
-    .item-progress.interactive:hover .progress-status {
-      display: none;
-    }
-
-    .item-progress.interactive:hover .progress-hover {
-      display: block;
-    }
-
     /* Input Bar */
     .input-bar {
       display: flex;
       gap: 12px;
       padding: 0 12px 12px;
+      align-items: center;
       background: var(--bg1);
       flex-shrink: 0;
-    }
-
-    .input-wrapper {
-      flex: 1;
-      position: relative;
+      overflow: visible;
+      z-index: 10;
     }
 
     #urlInput {
-      width: 100%;
+      flex: 1;
       height: 32px;
       padding: 0 12px;
       background: var(--bg2);
@@ -276,36 +157,18 @@
       color: var(--fg2);
     }
 
-    /* Input Overlay - preparing/downloading state */
-    .input-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.24);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .overlay-text {
-      color: var(--fg1);
-      font-size: 12px;
-    }
-
     #addButton {
       border: none;
       background: none;
       cursor: pointer;
       flex-shrink: 0;
       display: flex;
+      height: 16px;
       align-items: center;
       justify-content: center;
       padding: 0;
       position: relative;
+      overflow: visible;
     }
 
     #addButton:hover {
@@ -329,24 +192,70 @@
 
     .error-tooltip {
       position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg2);
+      bottom: calc(100% + 2px);
+      right: 0;
+      background: var(--bg3);
       color: var(--fg1);
       padding: 2px 4px;
       border-radius: 4px;
       font-size: 10px;
       line-height: 14px;
+      max-width: 240px;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s;
-      margin-bottom: 4px;
     }
 
     #addButton.error:hover .error-tooltip {
       opacity: 1;
+    }
+
+    /* Loading animation */
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #addButton.loading img {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Input disabled state */
+    #urlInput:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Success state */
+    .input-bar.success #urlInput {
+      display: none;
+    }
+
+    .success-message {
+      flex: 1;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      background: var(--bg2);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--success);
+    }
+
+    .success-message img {
+      width: 16px;
+      height: 16px;
     }
 
     /* Utilities */
@@ -385,11 +294,10 @@
 
       <!-- Input Bar -->
       <div class="input-bar">
-        <div class="input-wrapper">
-          <input type="text" id="urlInput" placeholder="" />
-          <div class="input-overlay hidden">
-            <span class="overlay-text">Preparing...</span>
-          </div>
+        <input type="text" id="urlInput" placeholder="" />
+        <div class="success-message hidden">
+          <img src="assets/icon_success.svg" alt="Success" />
+          <span id="successText"></span>
         </div>
         <button id="addButton">
           <img src="assets/icon_download.svg" width="16" height="16" alt="Download" />

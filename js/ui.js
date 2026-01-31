@@ -74,127 +74,6 @@ function isValidUrl(string) {
 }
 
 /**
- * 显示下载状态区域
- */
-function showDownloadStatus() {
-  const downloadContainer = document.getElementById("downloadContainer");
-  if (downloadContainer) {
-    downloadContainer.classList.remove("hidden");
-  }
-}
-
-/**
- * 隐藏下载状态区域
- */
-function hideDownloadStatus() {
-  const downloadContainer = document.getElementById("downloadContainer");
-  if (downloadContainer) {
-    downloadContainer.classList.add("hidden");
-  }
-}
-
-/**
- * 渲染下载状态
- */
-function renderDownloadStatus(item) {
-  const downloadContainer = document.getElementById("downloadContainer");
-  if (!downloadContainer) return;
-
-  // 从 URL 提取 source（hostname）
-  let source = item.source;
-  if (!source && item.url) {
-    try {
-      source = new URL(item.url).hostname;
-    } catch (e) {
-      source = "";
-    }
-  }
-
-  // 构建元数据项数组（只包含有值的项）
-  const metadataItems = [source, item.format, item.resolution].filter((v) => v);
-
-  // 根据状态显示不同的进度条内容
-  let progressContent = "";
-  let statusText = "";
-  let hoverText = "";
-  let hoverAction = ""; // "cancel" or "retry"
-
-  switch (item.state) {
-    case "preparing":
-      statusText = i18next.t("ui.preparing");
-      hoverText = i18next.t("ui.cancel");
-      hoverAction = "cancel";
-      progressContent = `
-        <div class="progress-text progress-status">${statusText}</div>
-        <div class="progress-text progress-hover">${hoverText}</div>
-      `;
-      break;
-    case "downloading":
-      statusText = i18next.t("ui.downloading");
-      hoverText = i18next.t("ui.cancel");
-      hoverAction = "cancel";
-      progressContent = `
-        <div class="progress-bar-fill" style="width: ${item.progress}%"></div>
-        <div class="progress-text progress-status">${statusText}</div>
-        <div class="progress-text progress-hover">${hoverText}</div>
-      `;
-      break;
-    case "completed":
-      statusText = i18next.t("ui.completed");
-      progressContent = `
-        <div class="progress-bar-fill" style="width: 100%"></div>
-        <div class="progress-text">${statusText}</div>
-      `;
-      break;
-    case "error":
-      statusText = item.error || i18next.t("download.failed");
-      hoverText = i18next.t("ui.retry");
-      hoverAction = "retry";
-      progressContent = `
-        <div class="progress-text progress-status error">${escapeHtml(statusText)}</div>
-        <div class="progress-text progress-hover">${hoverText}</div>
-      `;
-      break;
-  }
-
-  // 添加可交互类名
-  const interactiveClass = hoverAction ? "interactive" : "";
-
-  // 构建 HTML
-  const metadataHtml = metadataItems
-    .map((v) => `<span class="metadata-tag">${escapeHtml(v)}</span>`)
-    .join("");
-
-  downloadContainer.innerHTML = `
-    <div class="download-item">
-      <div class="item-content">
-        <div class="item-title">${escapeHtml(item.title)}</div>
-        <div class="item-metadata">${metadataHtml}</div>
-      </div>
-      <div class="item-progress ${interactiveClass}" data-action="${hoverAction}">
-        <div class="progress-bar-container">
-          ${progressContent}
-        </div>
-      </div>
-    </div>
-  `;
-
-  // 添加交互事件
-  if (hoverAction) {
-    const progressEl = downloadContainer.querySelector(".item-progress");
-    if (progressEl) {
-      progressEl.onclick = () => {
-        if (hoverAction === "retry") {
-          document.dispatchEvent(new CustomEvent("retryDownload"));
-        } else if (hoverAction === "cancel") {
-          document.dispatchEvent(new CustomEvent("cancelDownload"));
-        }
-      };
-    }
-  }
-}
-
-/**
  * 设置输入栏
  */
 function setupInputBar() {
@@ -203,22 +82,34 @@ function setupInputBar() {
 
   if (!urlInput || !addButton) return;
 
-  // 清除错误状态
+  // 更新按钮状态的辅助函数
+  const updateButtonState = () => {
+    const hasContent = urlInput.value.trim().length > 0;
+    if (hasContent) {
+      addButton.classList.remove("disabled");
+    } else {
+      addButton.classList.add("disabled");
+    }
+  };
+
+  // 初始状态：禁用按钮
+  addButton.classList.add("disabled");
+
+  // 监听输入变化
   urlInput.addEventListener("input", () => {
-    clearInputError();
+    resetInputBar();
+    updateButtonState();
   });
 
   // 处理提交
   const handleSubmit = () => {
     const url = urlInput.value.trim();
 
-    if (!url) {
-      showInputError(i18next.t("error.emptyUrl"));
-      return;
-    }
+    // 无内容时不处理（按钮已禁用，但防止回车触发）
+    if (!url) return;
 
     if (!isValidUrl(url)) {
-      showInputError(i18next.t("error.invalidUrl"));
+      setInputBarState("error", i18next.t("error.invalidUrl"));
       return;
     }
 
@@ -239,61 +130,33 @@ function setupInputBar() {
 }
 
 /**
- * 清空输入栏
+ * 清空输入栏内容（不重置状态）
  */
 function clearInputBar() {
   const urlInput = document.getElementById("urlInput");
   if (urlInput) {
     urlInput.value = "";
-    clearInputError();
   }
-}
-
-/**
- * 显示输入错误
- */
-function showInputError(message) {
-  const urlInput = document.getElementById("urlInput");
-  if (urlInput) {
-    urlInput.classList.add("error");
-    urlInput.setAttribute("placeholder", message);
-  }
-}
-
-/**
- * 清除输入错误
- */
-function clearInputError() {
-  const urlInput = document.getElementById("urlInput");
-  if (urlInput) {
-    urlInput.classList.remove("error");
-    urlInput.setAttribute("placeholder", i18next.t("ui.inputPlaceholder"));
-  }
-}
-
-/**
- * 转义 HTML
- */
-function escapeHtml(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
 }
 
 /**
  * 设置输入栏状态
- * @param {string} state - 'idle' | 'preparing' | 'downloading' | 'error'
+ * @param {string} state - 'idle' | 'preparing' | 'downloading' | 'completed' | 'error'
  * @param {string} errorMessage - 错误信息（仅 error 状态使用）
  */
 function setInputBarState(state, errorMessage = "") {
+  const inputBar = document.querySelector(".input-bar");
+  const urlInput = document.getElementById("urlInput");
   const addButton = document.getElementById("addButton");
-  const inputOverlay = document.querySelector(".input-overlay");
-  const overlayText = document.querySelector(".overlay-text");
   const buttonImg = addButton?.querySelector("img");
+  const successMessage = document.querySelector(".success-message");
+  const successText = document.getElementById("successText");
 
   // 移除所有状态
-  addButton?.classList.remove("disabled", "error");
-  inputOverlay?.classList.add("hidden");
+  addButton?.classList.remove("disabled", "error", "loading");
+  inputBar?.classList.remove("success");
+  if (urlInput) urlInput.disabled = false;
+  successMessage?.classList.add("hidden");
 
   // 移除错误 tooltip
   const existingTooltip = addButton?.querySelector(".error-tooltip");
@@ -301,17 +164,24 @@ function setInputBarState(state, errorMessage = "") {
 
   switch (state) {
     case "preparing":
-      addButton?.classList.add("disabled");
-      inputOverlay?.classList.remove("hidden");
-      if (overlayText) overlayText.textContent = "Preparing...";
-      if (buttonImg) buttonImg.src = "assets/icon_download.svg";
+    case "downloading":
+      addButton?.classList.add("disabled", "loading");
+      if (buttonImg) buttonImg.src = "assets/icon_loading.svg";
+      if (urlInput) urlInput.disabled = true;
       break;
 
-    case "downloading":
-      addButton?.classList.add("disabled");
-      inputOverlay?.classList.remove("hidden");
-      if (overlayText) overlayText.textContent = "Downloading...";
-      if (buttonImg) buttonImg.src = "assets/icon_download.svg";
+    case "completed":
+      inputBar?.classList.add("success");
+      successMessage?.classList.remove("hidden");
+      if (successText) successText.textContent = i18next.t("ui.successDownload");
+      if (buttonImg) buttonImg.src = "assets/icon_add.svg";
+      // 点击按钮恢复默认状态
+      if (addButton) {
+        addButton.onclick = () => {
+          resetInputBar();
+          addButton.onclick = null; // 恢复后移除这个特殊处理
+        };
+      }
       break;
 
     case "error":
@@ -337,7 +207,25 @@ function setInputBarState(state, errorMessage = "") {
  * 重置输入栏到初始状态
  */
 function resetInputBar() {
+  const urlInput = document.getElementById("urlInput");
+  const addButton = document.getElementById("addButton");
+
   setInputBarState("idle");
+
+  // 更新按钮状态
+  if (urlInput && addButton) {
+    const hasContent = urlInput.value.trim().length > 0;
+    if (hasContent) {
+      addButton.classList.remove("disabled");
+    } else {
+      addButton.classList.add("disabled");
+    }
+  }
+
+  // 聚焦输入框
+  if (urlInput) {
+    urlInput.focus();
+  }
 }
 
 module.exports = {
@@ -346,13 +234,8 @@ module.exports = {
   showMainUI,
   updateInitStatus,
   isValidUrl,
-  showDownloadStatus,
-  hideDownloadStatus,
-  renderDownloadStatus,
   setupInputBar,
   clearInputBar,
-  showInputError,
-  clearInputError,
   setInputBarState,
   resetInputBar,
 };

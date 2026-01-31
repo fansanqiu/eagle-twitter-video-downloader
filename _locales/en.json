@@ -16,7 +16,8 @@
     "retry": "Retry",
     "cancel": "Cancel",
     "addToQueue": "Add to Queue",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "successDownload": "Successful download"
   },
   "init": {
     "downloading": "Downloading yt-dlp...",
