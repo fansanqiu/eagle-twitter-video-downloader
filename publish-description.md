@@ -14,14 +14,23 @@
 ## 简短描述（一句话）
 
 中文：
-从 YouTube、Twitter / X、TikTok、Bilibili、Pinterest 等 yt-dlp 支持的网站下载视频，以及下载 Pinterest 纯图片 Pin，并导入 Eagle。
+从 YouTube、Twitter / X、TikTok、Bilibili、Pinterest 等 yt-dlp 支持的网站下载视频，以及下载 Pinterest 纯图片 Pin，完成后自动连同元数据导入 Eagle。
 
 英文：
-Download videos from sites supported by yt-dlp and image-only Pins from Pinterest, then import them into Eagle with useful metadata.
+Download videos from sites supported by yt-dlp and image-only Pinterest Pins, then automatically import completed media into Eagle with useful metadata.
 
 ---
 
 ## 详细说明（中文）
+
+使用步骤：
+
+1. 首次使用时，在插件的「依赖管理」页安装 yt-dlp，并安装 Eagle 官方 FFmpeg 插件。
+2. 依赖安装完成后自动进入主界面。
+3. 复制受支持网站的 HTTPS 媒体链接（视频页面或 Pinterest 图钉链接）。
+4. 将链接粘贴到主界面顶部的输入框。
+5. 点击输入框右侧的「下载」按钮，任务会加入下载队列（最多 3 个并发）。
+6. 下载完成后，媒体文件会自动导入 Eagle，并附带标题、平台标签与简介摘要。
 
 支持从 YouTube、Twitter / X、TikTok、Bilibili、Instagram、Pinterest、Vimeo 等 yt-dlp 支持的网站下载视频，同时支持下载 Pinterest 纯图片 Pin，并自动导入到 Eagle。导入时自动保存视频标题、平台解析标签与简介摘要（截取前 500 字符）；当用户在偏好设置中开启「自动设置 Eagle 数据来源」选项时，将同步写入原始网页链接。
 
@@ -44,13 +53,21 @@ Download videos from sites supported by yt-dlp and image-only Pins from Pinteres
 - 插件由 yt-dlp（视频解析与提取）与 FFmpeg（音视频合并与转码）提供核心支持。
 - 首次使用或依赖缺失：插件会打开依赖管理页（门槛模式），用户需在依赖管理页手动点击”安装”按钮以完成 yt-dlp 安装（锁定官方发布版本并强制执行 SHA-256 完整性校验）；FFmpeg 需配合 Eagle 官方 FFmpeg 插件使用，若未检测到可直接在依赖管理页点击一键跳转至 Eagle 应用商店快速安装。
 
-### 致谢与开源协议
-
-本项目基于 OlivierEstevez 开发的 eagle-twitter-video-downloader（https://github.com/OlivierEstevez/eagle-twitter-video-downloader）进行扩展，感谢原作者的开创性工作。视频解析与提取由 yt-dlp（https://github.com/yt-dlp/yt-dlp）提供支持，音视频合并与转码由 FFmpeg（https://ffmpeg.org）提供支持。
+致谢与开源协议：
+- 本项目基于 OlivierEstevez 开发的 eagle-twitter-video-downloader（https://github.com/OlivierEstevez/eagle-twitter-video-downloader）进行扩展，感谢原作者的开创性工作。视频解析与提取由 yt-dlp（https://github.com/yt-dlp/yt-dlp）提供支持，音视频合并与转码由 FFmpeg（https://ffmpeg.org）提供支持。
 
 ---
 
 ## 详细说明（英文）
+
+How to use:
+
+1. On first launch, install yt-dlp from the Dependencies tab and install Eagle's official FFmpeg plugin.
+2. Once both dependencies are ready, the main view opens automatically.
+3. Copy a supported HTTPS media URL (a video page URL, or a Pinterest Pin URL).
+4. Paste the URL into the input field at the top of the main view.
+5. Click the Download button next to the input field; the task is added to the download queue (up to 3 concurrent downloads).
+6. When a download completes, the media is imported into Eagle automatically, together with its title, a platform tag, and a description excerpt.
 
 Video Downloader uses yt-dlp to download videos from supported sites. It also downloads image-only Pinterest Pins and imports completed media into Eagle. Imported items include the title, a platform tag, and up to 500 characters of the description. Saving the original page as the Eagle data source is enabled by default and can be turned off in Preferences. Key features include downloading supported videos, downloading image-only Pinterest Pins, setting maximum resolution and frame rate, and automatically importing completed media into Eagle. First-time setup requires yt-dlp and Eagle's official FFmpeg plugin, plus an internet connection. Chrome Cookie access is optional and disabled by default. If enabled, yt-dlp may read Chrome login Cookies matching the target website and retry after a download from any supported HTTPS URL fails. The plugin does not use a developer-operated or intermediary collection server for Cookies; matching Cookies are sent by yt-dlp directly to the target website. For third-party sources extracted from Pinterest Pins, the plugin shows a per-domain prompt with the exact domain name before using Cookies.
 
@@ -73,6 +90,5 @@ Dependency Management & Setup Flow:
 - Powered by yt-dlp (video extraction engine) and FFmpeg (audio/video merging and transcoding).
 - First-Time Setup: If any component is missing, the plugin opens the Dependency Management tab. Users must click the "Install" button in the dependency panel to install yt-dlp (downloads the pinned official release with mandatory SHA-256 integrity verification). FFmpeg requires the official Eagle FFmpeg plugin; if not detected, users can click the one-click store button to install it from the Eagle Plugin Center.
 
-### Acknowledgements
-
-This project is based on eagle-twitter-video-downloader by OlivierEstevez (https://github.com/OlivierEstevez/eagle-twitter-video-downloader). Thanks to the original author for the foundational work. Video extraction is powered by yt-dlp (https://github.com/yt-dlp/yt-dlp), and audio/video merging and transcoding are powered by FFmpeg (https://ffmpeg.org).
+Acknowledgements:
+- This project is based on eagle-twitter-video-downloader by OlivierEstevez (https://github.com/OlivierEstevez/eagle-twitter-video-downloader). Thanks to the original author for the foundational work. Video extraction is powered by yt-dlp (https://github.com/yt-dlp/yt-dlp), and audio/video merging and transcoding are powered by FFmpeg (https://ffmpeg.org).
